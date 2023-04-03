@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 import cv2
 from cap_from_youtube import cap_from_youtube
 from GetInference import infer, imshow
 from PIL import Image
 from matplotlib import pyplot as plt
 import glob
+from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
+run_with_ngrok(app) # comment this out if you don't want to use ngrok
 
 optionDict = {'1': "https://tfhub.dev/sayakpaul/maxim_s-2_deraining_raindrop/1", '2': "https://tfhub.dev/sayakpaul/maxim_s-2_deraining_rain13k/1"}
 
@@ -19,7 +21,7 @@ def doVideo(option, videoName):
     frame = (width, height)
     length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    out = cv2.VideoWriter('output_video.avi',cv2.VideoWriter_fourcc(*'DIVX'),60,frame)
+    out = cv2.VideoWriter('output_video.mp4',cv2.VideoWriter_fourcc(*'DIVX'),60,frame)
 
     count = 0
 
@@ -52,11 +54,14 @@ def index():
 @app.route('/process', methods=['GET','POST'])
 def process():
     global optionDict
+    session['videoDone'] = False
     things = request.form
     things2 = request.files['video']
     with open(f'video.{things2.filename.split(".")[1]}','+wb') as f:
         things2.save(f)
     doVideo(optionDict[things['option']], f'video.{things2.filename.split(".")[1]}')
+    session['videoDone'] = True
     return render_template('index.html')
+
 if __name__ == "__main__":
-    app.run(host='127.0.0.1',port=5000,debug=True)
+    app.run()
