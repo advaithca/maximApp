@@ -18,8 +18,8 @@ image_path = tf.keras.utils.get_file(origin=image_url)
 Image.open(image_path)
 
 # Loading Model
-z = hub.resolve("https://tfhub.dev/sayakpaul/maxim_s-2_deraining_raindrop/1")
-_MODEL = tf.keras.models.load_model(z)
+z = None
+_MODEL = None
 
 # Preprocess
 def mod_padding_symmetric(image, factor=64):
@@ -59,7 +59,10 @@ def process_image(image: Image):
     return input_img, height, width, height_even, width_even
 
 
-def init_new_model(input_img):
+def init_new_model(input_img, modelUrl):
+    global z, _MODEL
+    z = hub.resolve("https://tfhub.dev/sayakpaul/maxim_s-2_deraining_raindrop/1")
+    _MODEL = tf.keras.models.load_model(z)
     variant = ckpt.split("/")[-1].split("_")[0]
     # print(variant)
     configs = MAXIM_CONFIGS['S-2']
@@ -79,10 +82,10 @@ def init_new_model(input_img):
     return new_model
 
 # Run predictions
-def infer(imageArr):
+def infer(imageArr, modelUrl):
     image = Image.fromarray(imageArr)
     preprocessed_image, height, width, height_even, width_even = process_image(image)
-    new_model = init_new_model(preprocessed_image)
+    new_model = init_new_model(preprocessed_image, modelUrl)
 
     preds = new_model.predict(preprocessed_image)
     if isinstance(preds, list):
