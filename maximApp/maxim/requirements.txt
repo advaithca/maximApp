@@ -11,7 +11,7 @@ click==8.1.3
 clu==0.0.8
 contextlib2==21.6.0
 contourpy==1.0.7
-cuda-python @ file:///opt/conda/conda-bld/cuda-python_1662674651464/work
+cuda-python
 cycler==0.11.0
 dm-tree==0.1.8
 einops==0.6.0
