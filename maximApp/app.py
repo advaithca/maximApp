@@ -34,7 +34,7 @@ def doVideo(option, videoName):
         frameDat = imshow(frameDat)
         if not ret:
             break
-        
+
         plt.imshow(frameDat)
         plt.axis('off')
         plt.savefig(f"images/{count}.jpg", bbox_inches='tight')
@@ -54,9 +54,9 @@ def process():
     global optionDict
     things = request.form
     things2 = request.files['video']
-    with open(f'video.{things2.filename.split(".")[0]}') as f:
+    with open(f'video.{things2.filename.split(".")[1]}','+wb') as f:
         things2.save(f)
-    doVideo(optionDict[things['option']], f'video.{things2.filename.split(".")[0]}')
+    doVideo(optionDict[things['option']], f'video.{things2.filename.split(".")[1]}')
     return render_template('index.html')
 if __name__ == "__main__":
     app.run(host='127.0.0.1',port=5000,debug=True)
