@@ -61,9 +61,9 @@ def process_image(image: Image):
 
 def init_new_model(input_img):
     variant = ckpt.split("/")[-1].split("_")[0]
-    print(variant)
+    # print(variant)
     configs = MAXIM_CONFIGS['S-2']
-    print(configs)
+    # print(configs)
     configs.update(
         {
             "variant": "S-2",
